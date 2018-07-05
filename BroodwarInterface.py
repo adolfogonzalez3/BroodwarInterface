@@ -60,12 +60,17 @@ class BroodwarInterface(object):
         return [e for e in self.__Broodwar.getEvents()]
        
     def connect(self, speedup=True):
-        #self.__Broodwar.enableFlag(cybw.Flag.CompleteMapInformation)
         while not self.__client.connect():
             sleep(0.5)
-        while not self.__Broodwar.isInGame():
+        events = [e.getType() for e in self.events]
+        while cybw.EventType.MatchStart not in events:#not self.__Broodwar.isInGame():
             self.update()
-        #self.__Broodwar.enableFlag(cybw.Flag.CompleteMapInformation)
+            events = [e.getType() for e in self.events]
+        self.__Broodwar.enableFlag(cybw.Flag.CompleteMapInformation)
+        
+        while not self.isInGame():
+            self.update()
+        
         if speedup is True:
             self.__Broodwar.setLocalSpeed(0)
             #Broodwar.setGUI(False)
@@ -74,7 +79,6 @@ class BroodwarInterface(object):
             self.__Broodwar.setLocalSpeed(167)
             #Broodwar.setGUI(False)
             self.__Broodwar.setFrameSkip(24)
-
         return True
     
     def isInGame(self):
@@ -157,9 +161,15 @@ class BroodwarInterface(object):
     def set_map(self, map_name, speedup=True):
         self.__Broodwar.setMap(map_name.encode())
         self.restart()
-        self.update(20)
+        
+        events = [e.getType() for e in self.events]
+        while cybw.EventType.MatchStart not in events: #not self.isInGame():
+            self.update()
+            events = [e.getType() for e in self.events]
+        self.__Broodwar.enableFlag(cybw.Flag.CompleteMapInformation)
+        
         while not self.isInGame():
-            self.update(number_of_secs=0.5)
+            self.update()
         
         if speedup is True:
             self.__Broodwar.setLocalSpeed(0)
@@ -237,3 +247,8 @@ class BroodwarInterface(object):
         height = self.__Broodwar.mapHeight()*32
         
         return width, height
+        
+    def set_viewbox_position(self, position):
+        X, Y = position
+        cybw_position = cybw.Position(X, Y)
+        self.__Broodwar.setScreenPosition(cybw_position)
