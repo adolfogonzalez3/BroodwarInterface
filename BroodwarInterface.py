@@ -13,6 +13,11 @@ documentation: https://bwapi.github.io/namespace_b_w_a_p_i.html
  setting up speedups are
  here: https://bwapi.github.io/class_b_w_a_p_i_1_1_game.html
  
+The actual python interface is
+here: https://bitbucket.org/ratiotile/cybw
+The python interface has no documentation so in order to learn about the functions
+you must read the bwapi documentation or read the cybw cython code.
+ 
 Not all functions in the BWAPI are implemented for the python version so there
 may be functions that don't work.
 '''
